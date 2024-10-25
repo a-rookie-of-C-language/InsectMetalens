@@ -34,7 +34,6 @@ class NAG:
         }
         self.total_loss = 0
         self.file_name = datetime.now().strftime("result/data_%Y%m%d_%H%M")
-        os.makedirs(self.file_name, exist_ok=True)
         self.file_exists = os.path.exists(self.file_name)
         # 初始化动量
         self.v = np.zeros_like(self.phases)
@@ -222,11 +221,11 @@ class NAG:
 
         print("df:", df)
         if not self.file_exists:
-            df.to_csv(self.file_name+"param.csv", mode='w', header=True, index=False)
+            df.to_csv(self.file_name, mode='w', header=True, index=False)
             self.file_exists = True
         else:
-            df.to_csv(self.file_name+"param.csv", mode='a', header=False, index=False)
-        print(f"数据已追加保存到 {self.file_name}param.csv")
+            df.to_csv(self.file_name, mode='a', header=False, index=False)
+        print(f"数据已追加保存到 {self.file_name}")
 
     def update_learning_rate(self, loss, learning_rate=0.01, decay_factor=0.1, min_learning_rate=1e-6,
                              patience=0,

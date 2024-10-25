@@ -180,17 +180,17 @@ class MetalensOptimization:
             # 保存数据
             df = pd.DataFrame(self.phases.get())
             # 创建保存结果的文件夹路径
-            result_folder = 'result/' + datetime.datetime.now().strftime('%Y%m%d')
+            # result_folder = 'result/' + datetime.now().strftime('%Y%m%d')
 
             # 检查结果文件夹是否存在，不存在则创建
-            if not os.path.exists(result_folder):
-                os.makedirs(result_folder)
+            # if not os.path.exists(result_folder):
+            #     os.makedirs(result_folder)
 
             # 日期加上时间戳作为文件名
-            filename = result_folder + '/' + datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+            filename = datetime.now().strftime('%Y%m%d%H%M%S')
 
             # 保存为CSV文件
-            df.to_csv(filename + ".csv", mode='a', header=False, index=False)
+            df.to_csv(filename, mode='a', header=False, index=False)
         except Exception as e:
             print(f"Error occurred while saving results: {str(e)}")
 
