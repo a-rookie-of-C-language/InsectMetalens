@@ -1,0 +1,16 @@
+# This is the custom data.yaml file.
+parameters:
+  speed_of_light: 0.3
+  wavelength_center: 10.6
+  outer_radius: 600.25
+  sample_interval: 7.25
+  n_sampling: 4096
+  lambda_list: [ 8, 9.3, 10.6, 11.3, 12]
+
+target_parameters:
+  TargetFWHM: 1.5
+  TargetSideLobeRatio: 0.05
+  TargetPeakIntensity: 2000
+  TargetFocalOffset: 0.00001
+  TargetDOF: 0.0
+  TargetIntensitySum: 0.0
