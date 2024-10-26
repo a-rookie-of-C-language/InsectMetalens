@@ -4,6 +4,7 @@ import os
 from collections import namedtuple
 from datetime import datetime
 
+import cupy
 import cupy as np
 import pandas as pd
 from tqdm import tqdm
@@ -34,6 +35,8 @@ class NAG:
         }
         self.total_loss = 0
         self.file_name = datetime.now().strftime("result/data_%Y%m%d_%H%M")
+        os.makedirs(self.file_name, exist_ok=True)
+        self.file_name = self.file_name + "/" + datetime.now().strftime("%Y%m%d_%H%M")
         self.file_exists = os.path.exists(self.file_name)
         # 初始化动量
         self.v = np.zeros_like(self.phases)
@@ -49,21 +52,16 @@ class NAG:
         while iteration < self.max_iter:
             # 预测性更新参数
             params_pred = params - self.momentum * self.v
-            print("momentum ", self.momentum, end="\n")
             # 随机选择样本
             indices = np.random.choice(len(params), size=len(params), replace=False)
             # 计算梯度
             gradient = self.compute_gradient(params_pred, indices)
             if gradient.all() == 0:
                 gradient = 1
-            print("gradient", gradient, end="\n")
             # 更新动量
             self.v = self.momentum * self.v + self.learning_rate * gradient
-            print("v", self.v, end="\n")
             # 更新参数
             params -= self.v
-
-            print("phases:", params)
             # 计算损失函数
             cur_params, loss = self.loss_function(params)
             self.save_results(cur_params)
@@ -128,7 +126,6 @@ class NAG:
         gradient[indices] = (loss_plus - loss_minus) / (2 * epsilon)
 
         return gradient
-
 
     def loss_function(self, phases):
         # 当前的评价参数
@@ -221,10 +218,12 @@ class NAG:
 
         print("df:", df)
         if not self.file_exists:
-            df.to_csv(self.file_name, mode='w', header=True, index=False)
+            df.to_csv(self.file_name + ".csv", mode='w', header=True, index=False)
             self.file_exists = True
         else:
-            df.to_csv(self.file_name, mode='a', header=False, index=False)
+            df.to_csv(self.file_name + ".csv", mode='a', header=False, index=False)
+        with open(self.file_name + "phases", mode='w', ) as file:
+            file.write(str(self.phases))
         print(f"数据已追加保存到 {self.file_name}")
 
     def update_learning_rate(self, loss, learning_rate=0.01, decay_factor=0.1, min_learning_rate=1e-6,
